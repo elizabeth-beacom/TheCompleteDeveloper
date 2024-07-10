@@ -1,12 +1,12 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
-import { storeDocument } from "@/mongoose/weather/services";
+import { storeDocument } from "../mongoose/weather/services";
 
 async function dbConnect(): Promise<any | String> {
     const mongoServer = await MongoMemoryServer.create();
     const MONGOIO_URI = mongoServer.getUri();
     await mongoose.disconnect();
-    await mongoose.connect(MONGOIO_URI, { dbName: "Weather"});
+    let db = await mongoose.connect(MONGOIO_URI, { dbName: "Weather"});
 
     await storeDocument({
         zip:"96815",
@@ -29,6 +29,8 @@ async function dbConnect(): Promise<any | String> {
         tempF: "86F",
         friends: ["96815","96814"]
     });
+
+    return mongoServer;
 }
 
 export default dbConnect;
